@@ -1,5 +1,6 @@
 const cheerio = require('cheerio')
 const moment = require('moment')
+const { Op } = require('sequelize')
 const { sendHttpRequest } = require('../lib/request')
 const { reformatMoneyStringToFloat } = require('../lib/moneyFormat')
 const { convertDateFormat } = require('../lib/timeFormat')
@@ -10,10 +11,18 @@ const BCA_CURRENCY_URL = 'https://www.bca.co.id/id/Individu/Sarana/Kurs-dan-Suku
 
 const getCurrencyData = async () => {
     try {
-        console.time('scraping time')
+        const symbols = []
         const currencyData = await scrapeCurrencyFromBca(BCA_CURRENCY_URL)
-        console.timeEnd('scraping time')
-        const existingCurrencyData = await CurrencyModel.findAll({ where: { date: currencyData[0].date }}, { raw: true })
+        currencyData.forEach((data) => symbols.push(data.symbol))
+        const schemaOptions = {
+            where: {[Op.and]: [
+                { date: currencyData[0].date },
+                { symbol: { [Op.in]: symbols }}
+            ]},
+            raw: true
+        }
+        console.log({ symbols })
+        const existingCurrencyData = await CurrencyModel.findAll(schemaOptions)
 
         if (existingCurrencyData.length > 0) {
             // JUST RETURN EXISTING CURRENCY DATA IF CURRENCY DATA WITH SAME DATE EXIST

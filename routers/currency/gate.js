@@ -31,8 +31,34 @@ const removeCurrencyDataByDate = async (req, res)=> {
     }
 }
 
+const createCurrencyData = async (req, res)=> {
+    try {
+        const payload = await controller.createCurrencyData(req.body)
+
+        res.success({ payload })
+    } catch (error) {
+        res.error(error)
+    }
+}
+
+const updateCurrencyData = async (req, res)=> {
+    try {
+        const payload = await controller.updateCurrencyData(req.body)
+
+        if (payload) {
+            res.success({ payload })
+        }
+        res.error({ code: 404, message: "data doesn't exist" })
+    } catch (error) {
+        res.error(error)
+    }
+}
+
+
 module.exports = {
     getCurrencyDataByDateRange,
     getCurrencyDataByDateRangeAndSymbol,
     removeCurrencyDataByDate,
+    createCurrencyData,
+    updateCurrencyData
 }
