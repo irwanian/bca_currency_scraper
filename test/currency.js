@@ -12,14 +12,14 @@ describe('GET /api/kurs', () => {
         const startdate = '2021-02-02'
         const enddate = '2021-02-03'
         request.get(`/api/kurs?startdate=${startdate}&enddate=${enddate}`)
-            .end((err, result) => {
-                result.should.have.status(200)
-                result.should.have.property('type').eq('application/json')
-                result.should.have.property('error').eq(false)
-                result.should.have.property('body').haveOwnProperty('message').eq('success')
-                result.should.have.property('body').haveOwnProperty('payload').a('array').length.least(0)
-                done()
-            })
+        .end((err, result) => {
+            result.should.have.status(200)
+            result.should.have.property('type').eq('application/json')
+            result.should.have.property('error').eq(false)
+            result.should.have.property('body').haveOwnProperty('message').eq('success')
+            result.should.have.property('body').haveOwnProperty('payload').a('array').length.least(0)
+            done()
+        })
     })
 })
 
@@ -28,14 +28,14 @@ describe('GET /api/kurs/:symbol', () => {
         const startdate = '2021-02-02'
         const enddate = '2021-02-03'
         request.get(`/api/kurs/USD?startdate=${startdate}&enddate=${enddate}`)
-            .end((err, result) => {
-                result.should.have.status(200)
-                result.should.have.property('type').eq('application/json')
-                result.should.have.property('error').eq(false)
-                result.should.have.property('body').haveOwnProperty('message').eq('success')
-                result.should.have.property('body').haveOwnProperty('payload').a('array').length.least(0)
-                done()
-            })
+        .end((err, result) => {
+            result.should.have.status(200)
+            result.should.have.property('type').eq('application/json')
+            result.should.have.property('error').eq(false)
+            result.should.have.property('body').haveOwnProperty('message').eq('success')
+            result.should.have.property('body').haveOwnProperty('payload').a('array').length.least(0)
+            done()
+        })
     })
 })
 
@@ -139,7 +139,6 @@ describe('PUT /api/kurs', () => {
 
 describe('DELETE /api/kurs', () => {
     it('should delete currency record', (done) => {
-        
         request.delete('/api/kurs?date=2021-02-01')
         .end((err, result)=> {
             result.should.have.status(200)

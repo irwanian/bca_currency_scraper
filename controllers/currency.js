@@ -45,10 +45,15 @@ const getCurrencyDataByDateRangeAndSymbol = async ({ startdate, enddate, symbol 
                 ]
             }
         }
-
         const existingData = await CurrencyModel.findAll(schemaOptions)
+        if (existingData.length > 0) {
+
+            return existingData
+        }
+        else {
+            throw { code: 404, message: 'Data Not Found' }
+        }
         
-        return existingData
     } catch (error) {
         throw error       
     }
@@ -64,8 +69,13 @@ const getCurrencyDataByDateRange = async ({ startdate, enddate })  => {
             }
         }
         const currencyData = await CurrencyModel.findAll(schemaOptions)
+        if (currencyData.length > 0) {
+            return currencyData
+        }
+        else {
+            throw { code: 404, message: 'Data Not Found' }
+        }
 
-        return currencyData
     } catch (error) {
         throw error
     }
