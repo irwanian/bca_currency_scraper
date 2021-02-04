@@ -10,7 +10,7 @@ app.use(cors())
 
 app.use((req, res, next) => {
     res.success = ({ payload, message, code }) => {
-        res.status(200).send({
+        res.status(code || 200).send({
             code: code || 200,
             message: message || 'success',
             payload: payload || {}

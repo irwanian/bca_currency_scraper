@@ -20,11 +20,11 @@ const getCurrencyData = async () => {
         if (existingCurrencyData.length > 0) {
             // CHECK MISSING SYMBOL(S) ON CURRENT DATE
             // IF THERE ARE MISSING SYMBOLS, INSERT MISSING SYMBOL TO DB
-            // ELSE JUST RETURN EXISTING DATA
+            // ELSE JUST RETURN EXISTING DATA ON THAT DATE
             const missingSymbols = checkMissingSymbolFromScrapedData({ symbols, existingCurrencyData })
             const newDataToBeAdded = currencyData.filter(val => missingSymbols.includes(val.symbol))
 
-            const result = missingSymbols.length > 0 ? await bulkInsertScrapedData(newDataToBeAdded) : []
+            const result = missingSymbols.length > 0 ? await bulkInsertScrapedData(newDataToBeAdded) : existingCurrencyData
 
             return result
         }
@@ -118,5 +118,6 @@ const getTableData = ($) => {
 }
 
 module.exports = {
-    getCurrencyData
+    getCurrencyData,
+    scrapeCurrencyFromBca
 }

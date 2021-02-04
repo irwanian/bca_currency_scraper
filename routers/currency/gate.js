@@ -45,10 +45,7 @@ const updateCurrencyData = async (req, res)=> {
     try {
         const payload = await controller.updateCurrencyData(req.body)
 
-        if (payload) {
-            res.success({ payload })
-        }
-        res.error({ code: 404, message: "data doesn't exist" })
+        res.success({ payload })
     } catch (error) {
         res.error(error)
     }

@@ -74,9 +74,14 @@ const getCurrencyDataByDateRange = async ({ startdate, enddate })  => {
 const removeCurrencyDataByDate = async ({ date }) => {
     try {
         const dataToBeDeleted = await getCurrencyDataByDate({ date })
-        await CurrencyModel.destroy({ where: { date }})
-        
-        return dataToBeDeleted
+        if (dataToBeDeleted.length > 0) {
+            await CurrencyModel.destroy({ where: { date }})
+            
+            return dataToBeDeleted
+        }
+        else {
+            throw { code: 404, message: 'Data Not Found' }
+        }
     } catch (error) {
         throw error
     }
@@ -87,7 +92,7 @@ const createCurrencyData = async (params) => {
         const existingData = await getCurrencyDataByDateAndSymbol(params)
         // IF DATA EXISTS RETURN EXISTING DATA WITHOUT CREATING NEW ONE
         if (existingData) {
-            return existingData
+            throw { code: 400, message: 'Data Already Exists' }
         }
         else {
             const newDataCreated = await CurrencyModel.create(params)
@@ -113,7 +118,7 @@ const updateCurrencyData = async (params) => {
             return existingData.save()
         }
         else {
-            return null
+            throw { code: 404, message: 'Data Not Found' }
         }
     } catch (error) {
         throw error

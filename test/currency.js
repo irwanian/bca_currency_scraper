@@ -6,6 +6,7 @@ chai.use(chaiHttp)
 chai.should()
 const request = chai.request(server).keepOpen()
 
+
 describe('GET /api/kurs', () => {
     it('should get currency data by date range', (done) => {
         const startdate = '2021-02-02'
