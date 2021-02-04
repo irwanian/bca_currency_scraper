@@ -1,3 +1,8 @@
 # bca_currency_scraper
-A currency scraper from BCA currency info.
-using nodejs, express, axios, cheerio to do web scraping.
+A currency scraper from BCA currency info using tech stacks:
+* Node.js and Express as a server
+* MySQL as a database service
+* Sequelize as a ORM
+* axios and cheerio as a web scraper
+* Joi as a data input validator
+* Mocha chai and nyc as a testing and reporting library
