@@ -12,29 +12,60 @@ const BCA_CURRENCY_URL = 'https://www.bca.co.id/id/Individu/Sarana/Kurs-dan-Suku
 const getCurrencyData = async () => {
     try {
         const symbols = []
+        
         const currencyData = await scrapeCurrencyFromBca(BCA_CURRENCY_URL)
         currencyData.forEach((data) => symbols.push(data.symbol))
-        const schemaOptions = {
-            where: {[Op.and]: [
-                { date: currencyData[0].date },
-                { symbol: { [Op.in]: symbols }}
-            ]},
-            raw: true
-        }
-        console.log({ symbols })
-        const existingCurrencyData = await CurrencyModel.findAll(schemaOptions)
+        const existingCurrencyData = await checkExistingCurrencyData({ currencyData, symbols })
 
         if (existingCurrencyData.length > 0) {
-            // JUST RETURN EXISTING CURRENCY DATA IF CURRENCY DATA WITH SAME DATE EXIST
-            console.log({ existingCurrencyDataLength: existingCurrencyData.length })
-            return existingCurrencyData
+            // CHECK MISSING SYMBOL(S) ON CURRENT DATE
+            // IF THERE ARE MISSING SYMBOLS, INSERT MISSING SYMBOL TO DB
+            // ELSE JUST RETURN EXISTING DATA
+            const missingSymbols = checkMissingSymbolFromScrapedData({ symbols, existingCurrencyData })
+            const newDataToBeAdded = currencyData.filter(val => missingSymbols.includes(val.symbol))
+
+            const result = missingSymbols.length > 0 ? await bulkInsertScrapedData(newDataToBeAdded) : []
+
+            return result
         }
         else {
-            const currencyDataInserted = await CurrencyModel.bulkCreate(currencyData)
-            console.log({ currencyDataInserted })
+            const currencyDataInserted = await bulkInsertScrapedData(currencyData)
             
             return currencyDataInserted
         }
+    } catch (error) {
+        throw error       
+    }
+}
+
+const bulkInsertScrapedData = async (data) => {
+    try {
+        return await CurrencyModel.bulkCreate(data)
+    } catch (error) {
+        throw error
+    }
+}
+
+const checkExistingCurrencyData = async ({ currencyData, symbols }) => {
+    const schemaOptions = {
+        where: {[Op.and]: [
+            { date: currencyData[0].date },
+            { symbol: { [Op.in]: symbols }}
+        ]},
+        raw: true
+    }
+    
+    const results = await CurrencyModel.findAll(schemaOptions)
+
+    return results
+}
+
+const checkMissingSymbolFromScrapedData = ({ existingCurrencyData, symbols }) => {
+    try {
+        const existingSymbols = [...existingCurrencyData.map(data => data.symbol)]
+        const missingSymbols = symbols.filter(symbol => !existingSymbols.includes(symbol))
+        
+        return missingSymbols
     } catch (error) {
         throw error       
     }

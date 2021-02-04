@@ -85,7 +85,7 @@ const removeCurrencyDataByDate = async ({ date }) => {
 const createCurrencyData = async (params) => {
     try {
         const existingData = await getCurrencyDataByDateAndSymbol(params)
-        
+        // IF DATA EXISTS RETURN EXISTING DATA WITHOUT CREATING NEW ONE
         if (existingData) {
             return existingData
         }
