@@ -22,19 +22,15 @@ module.exports = (sequelize, DataTypes) => {
       },
       e_rate: {
         type: DataTypes.JSON,
-        allowNull: false,
       },
       tt_counter: {
         type: DataTypes.JSON,
-        allowNull: false,
       },
       bank_notes: {
         type: DataTypes.JSON,
-        allowNull: false,
       },
       date: {
         type: DataTypes.STRING(10),
-        allowNull: false,
       },
       created_at: {
         type: DataTypes.INTEGER,
