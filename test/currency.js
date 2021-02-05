@@ -86,6 +86,35 @@ describe('POST /api/kurs', () => {
             done()
         })
     })
+
+    it('should NOT post new currency record', (done) => {
+        const objCurrency = {
+            symbol: 'BTX',
+            e_rate: {
+                jual: 23500,
+                beli: 23235.8
+            },
+            tt_counter: {
+                beli: 23135.6
+            },
+            bank_notes: {
+                jual: -23470,
+                beli: 23215.7
+            },
+            date: '2021-02-01'
+        }
+
+        request.post('/api/kurs')
+        .send(objCurrency)
+        .end((err, result)=> {
+            result.should.have.status(400)
+            result.should.have.property('type').eq('application/json')
+            result.should.have.property('body').haveOwnProperty('message').not.eq('success')
+            result.should.have.property('body').haveOwnProperty('payload').a('object')
+            
+            done()
+        })
+    })
 })
 
 describe('PUT /api/kurs', () => {
@@ -135,6 +164,35 @@ describe('PUT /api/kurs', () => {
             done()
         })
     })
+
+    it('should NOT update currency record', (done) => {
+        const objCurrency = {
+            symbol: 'BTX',
+            e_rate: {
+                jual: 7500,
+                beli: 7235.8
+            },
+            tt_counter: {
+                beli: 7135.6
+            },
+            bank_notes: {
+                jual: -7470,
+                beli: 7215.7
+            },
+            date: '2021-02-01'
+        }
+
+        request.post('/api/kurs')
+        .send(objCurrency)
+        .end((err, result)=> {
+            result.should.have.status(400)
+            result.should.have.property('type').eq('application/json')
+            result.should.have.property('body').haveOwnProperty('message').not.eq('success')
+            result.should.have.property('body').haveOwnProperty('payload').a('object')
+            
+            done()
+        })
+    })
 })
 
 describe('DELETE /api/kurs', () => {
@@ -144,6 +202,17 @@ describe('DELETE /api/kurs', () => {
             result.should.have.status(200)
             result.should.have.property('body').haveOwnProperty('message').eq('success')
             result.should.have.property('body').haveOwnProperty('payload').a('array').length.least(0)
+            
+            done()
+        })
+    })
+
+    it('should NOT delete currency record', (done) => {
+        request.delete('/api/kurs?date=01-02-2021')
+        .end((err, result)=> {
+            result.should.have.status(400)
+            result.should.have.property('body').haveOwnProperty('message').not.eq('success')
+            result.should.have.property('body').haveOwnProperty('payload').a('object')
             
             done()
         })
